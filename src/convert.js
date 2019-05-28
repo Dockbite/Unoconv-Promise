@@ -9,5 +9,6 @@
 exports = module.exports = function (file, options = {}) {
   options.file = file
   options.stdout = true
+  console.log('convert', {options})
   return this.run(options)
 }

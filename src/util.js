@@ -20,8 +20,14 @@ const SUPPORTED_OPTIONS = {
 exports = module.exports = {
   UnsupportedError: UnsupportedError,
   parseOptions: (options) => {
-    let bin = 'unoconv'
+    let bin = options.bin || 'unoconv'
     let childArgs = []
+
+    if (process.platform === "win32" && options.bin) {
+      childArgs = ['/s', '/c', options.bin]
+      bin = 'cmd.exe'
+    }
+    
     for (const key in options) {
       if (SUPPORTED_OPTIONS.hasOwnProperty(key)) {
         childArgs.push(`${SUPPORTED_OPTIONS[key]} ${options[key]}`)
@@ -29,6 +35,7 @@ exports = module.exports = {
         switch (key) {
         case 'file': // Target File
         case 'string': // Output as string
+        case "bin": // Binary
           break
         case 'output':
           childArgs.push(`-o${options[key]}`) //No Space
@@ -64,7 +71,7 @@ exports = module.exports = {
 
     }
     return {
-      bin: options.bin || bin,
+      bin,
       args: childArgs
     }
   }

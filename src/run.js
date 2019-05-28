@@ -14,7 +14,7 @@ exports = module.exports = function (options = {}) {
       args.push(options.file)
     }
 
-    debug(args)
+    debug({parsedOptions, args})
 
     const child = childProcess.spawn(parsedOptions.bin, args)
     const stdout = []
@@ -37,7 +37,7 @@ exports = module.exports = function (options = {}) {
     })
 
     child.on('exit', function () {
-      if (stderr.length) {
+      if (stderr.length && !stdout.length) {
         return reject(new Error(Buffer.concat(stderr).toString('utf8')))
       }
       if (options.string) {
